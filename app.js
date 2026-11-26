@@ -64,6 +64,15 @@ function validateDateString(text) {
 }
 
 async function apiRequest(path, options = {}) {
+  if (path.includes('/reservas')) {
+if (!options.method || options.method === 'GET') {
+return JSON.parse(localStorage.getItem('reservas_rzr') || '[]');
+}
+return { ok: true };
+}
+if (path.includes('/clientes')) {
+return [];
+}
   const headers = {
     'Content-Type': 'application/json',
     ...(options.headers || {}),
