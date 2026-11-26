@@ -3,11 +3,8 @@
  * Conecta directamente con la API REST (/api/*) del servidor local.
  */
 
-const API_BASE =
-  window.location.protocol === 'file:' ||
-  ['5500', '5501'].includes(window.location.port)
-    ? 'http://127.0.0.1:5000'
-    : '';
+const API_BASE = '';
+const MODO_LOCAL = true;
 
 const TARIFA_POR_HORA = 500.0;
 const COSTO_EXTRAS = 300.0;
