@@ -253,6 +253,23 @@ async function handleLoginSubmit(event) {
   setBarLoading('auth-loading-bar', true);
 
   try {
+    if (MODO_LOCAL) {
+  let usuarios = JSON.parse(localStorage.getItem('usuarios_rzr') || '[]');
+  let encontrado = usuarios.find(u => u.usuario === usuario && u.password === password);
+  if (!encontrado) {
+    showFeedback('auth-feedback', 'Usuario o contraseña incorrectos', 'error');
+    setButtonLoading(submitBtn, false);
+    setBarLoading('auth-loading-bar', false);
+    return;
+  }
+  state.token = 'local-' + usuario;
+  state.usuario = encontrado.usuario;
+  state.nickname = encontrado.nickname || usuario;
+  state.fechaTexto = fechaTexto;
+  passInput.value = '';
+  enterWorkspace('Bienvenido ' + usuario);
+  return;
+}
     const res = await apiRequest('/api/auth/login', {
       method: 'POST',
       body: JSON.stringify({
