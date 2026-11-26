@@ -193,6 +193,24 @@ async function handleRegisterSubmit(event) {
   setBarLoading('auth-loading-bar', true);
 
   try {
+    if (MODO_LOCAL) {
+  let usuarios = JSON.parse(localStorage.getItem('usuarios_rzr') || '[]');
+  if (usuarios.find(u => u.usuario === usuario)) {
+    showFeedback('auth-feedback', 'Ese usuario ya existe, intenta iniciar sesión', 'error');
+    setButtonLoading(submitBtn, false);
+    setBarLoading('auth-loading-bar', false);
+    return;
+  }
+  usuarios.push({ usuario: usuario, password: password, nickname: usuario });
+  localStorage.setItem('usuarios_rzr', JSON.stringify(usuarios));
+  document.getElementById('form-register').reset();
+  document.getElementById('login-usuario').value = usuario;
+  switchAuthTab('login');
+  showFeedback('auth-feedback', 'Cuenta creada. Ahora inicia sesión con tu cuenta.', 'success');
+  setButtonLoading(submitBtn, false);
+  setBarLoading('auth-loading-bar', false);
+  return;
+}
     const fechaTexto = document.getElementById('login-fecha').value.trim();
     const res = await apiRequest('/api/auth/register', {
       method: 'POST',
