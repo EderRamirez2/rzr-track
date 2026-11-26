@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RZR-Track — Gestión de Reservas y Bitácora Operativa</title>
+    <meta
+      name="description"
+      content="Plataforma web para gestión de reservas de tours RZR, directorio de clientes, cálculo de tarifas y bitácora operativa en archivos."
+    />
+    <meta property="og:title" content="RZR-Track — Gestión de Reservas y Bitácora Operativa" />
+    <meta
+      property="og:description"
+      content="Plataforma web para gestión de reservas de tours RZR, directorio de clientes, cálculo de tarifas y bitácora operativa en archivos."
+    />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <!-- PANTALLA 1: BIENVENIDA, FECHA DE OPERACIÓN Y ACCESO -->
+    <div id="auth-screen" class="auth-shell">
+      <header class="auth-header">
+        <div class="container auth-header-inner">
+          <span class="brand-wordmark">RZR-Track</span>
+          <span class="header-meta-text" id="auth-date-summary">
+            Operación diaria · Jalisco y Sinaloa
+          </span>
+        </div>
+      </header>
+
+      <main class="container auth-grid">
+        <section class="auth-intro" aria-labelledby="auth-hero-title">
+          <p class="kicker-text">Sistema operativo de tours todo terreno</p>
+          <h1 id="auth-hero-title" class="hero-title">
+            Controla reservas RZR, clientes y archivos desde un solo lugar.
+          </h1>
+          <p class="hero-lead">
+            Calcula tarifas al instante, genera tickets verificados y mantén sincronizadas
+            las bitácoras de sucursales, unidades disponibles y clientes registrados.
+          </p>
+
+          <div class="spec-row" aria-label="Especificaciones del servicio">
+            <span>4 sucursales activas</span>
+            <span aria-hidden="true">·</span>
+            <span>Flota RZR-01, RZR-02, RZR-05</span>
+            <span aria-hidden="true">·</span>
+            <span class="mono-inline">$500.00 / hr + $300.00 extras</span>
+          </div>
+
+          <figure class="hero-media-frame">
+            <div class="hero-media-fallback" aria-hidden="true">
+              <svg
+                width="48"
+                height="48"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="7" cy="17" r="2.5"></circle>
+                <circle cx="17" cy="17" r="2.5"></circle>
+                <path d="M5 17H3v-4l2.5-5h7.5l3 4h3.5l1.5 2v3h-1.5"></path>
+                <path d="M9.5 17h5"></path>
+                <path d="M8 8v4"></path>
+              </svg>
+              <span>RZR-Track · Rutas de montaña y costa</span>
+            </div>
+            <img
+              src="/src/assets/images/rzr_mountain_trail_1795454310913.jpg"
+              alt="Vehículo todo terreno Polaris RZR en sendero de bosque de pinos al amanecer"
+              referrerpolicy="no-referrer"
+              class="hero-media-img"
+              onerror="this.style.display='none'"
+            />
+          </figure>
+        </section>
+
+        <section class="auth-panel" aria-label="Acceso de operador">
+          <div class="segmented-control" role="tablist" aria-label="Modo de acceso">
+            <button
+              type="button"
+              id="tab-login"
+              class="segmented-btn is-active"
+              role="tab"
+              aria-selected="true"
+              aria-controls="form-login"
+            >
+              Iniciar sesión
+            </button>
+            <button
+              type="button"
+              id="tab-register"
+              class="segmented-btn"
+              role="tab"
+              aria-selected="false"
+              aria-controls="form-register"
+            >
+              Registrarse
+            </button>
+          </div>
+
+          <div
+            id="auth-loading-bar"
+            class="loading-bar"
+            role="progressbar"
+            aria-label="Cargando programa"
+            hidden
+          >
+            <div class="loading-bar-fill"></div>
+          </div>
+
+          <div id="auth-feedback" class="feedback-banner" role="status" aria-live="polite" hidden></div>
+
+          <!-- Formulario de Inicio de Sesión -->
+          <form id="form-login" class="stack-form" novalidate>
+            <div class="form-row-2">
+              <div class="field-group">
+                <label for="login-nickname" class="field-label">Tu nombre (Nickname)</label>
+                <input
+                  id="login-nickname"
+                  name="nickname"
+                  type="text"
+                  class="field-input"
+                  placeholder="Ej. Carlos Mendoza"
+                  maxlength="40"
+                  autocomplete="name"
+                />
+              </div>
+
+              <div class="field-group">
+                <label for="login-fecha" class="field-label">Fecha de hoy (DD/MM/AAAA)</label>
+                <input
+                  id="login-fecha"
+                  name="fechaTexto"
+                  type="text"
+                  class="field-input mono-input"
+                  placeholder="23/11/2026"
+                  maxlength="10"
+                  inputmode="numeric"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label for="login-usuario" class="field-label">Usuario</label>
+              <input
+                id="login-usuario"
+                name="usuario"
+                type="text"
+                class="field-input"
+                placeholder="Tu nombre de usuario"
+                autocomplete="username"
+                required
+              />
+            </div>
+
+            <div class="field-group">
+              <label for="login-password" class="field-label">Contraseña</label>
+              <input
+                id="login-password"
+                name="password"
+                type="password"
+                class="field-input"
+                placeholder="Ingresa tu contraseña"
+                autocomplete="current-password"
+                required
+              />
+            </div>
+
+            <button type="submit" id="btn-login-submit" class="btn-primary btn-block">
+              <span class="btn-spinner" hidden aria-hidden="true"></span>
+              <span class="btn-label">Entrar a RZR-Track</span>
+            </button>
+
+            <p class="form-hint" id="auth-first-user-hint">
+              ¿Aún no tienes cuenta de operador? Cambia a la pestaña <strong>Registrarse</strong>.
+            </p>
+          </form>
+
+          <!-- Formulario de Registro -->
+          <form id="form-register" class="stack-form" hidden novalidate>
+            <div class="field-group">
+              <label for="reg-usuario" class="field-label">Crea un usuario</label>
+              <input
+                id="reg-usuario"
+                name="usuario"
+                type="text"
+                class="field-input"
+                placeholder="Mínimo 3 caracteres (ej. operador01)"
+                autocomplete="username"
+                required
+              />
+            </div>
+
+            <div class="field-group">
+              <label for="reg-password" class="field-label">Crea una contraseña</label>
+              <input
+                id="reg-password"
+                name="password"
+                type="password"
+                class="field-input"
+                placeholder="Mínimo 4 caracteres"
+                autocomplete="new-password"
+                required
+              />
+            </div>
+
+            <div class="field-group">
+              <label for="reg-password-confirm" class="field-label">Confirmar contraseña</label>
+              <input
+                id="reg-password-confirm"
+                name="passwordConfirm"
+                type="password"
+                class="field-input"
+                placeholder="Repite la contraseña"
+                autocomplete="new-password"
+                required
+              />
+            </div>
+
+            <button type="submit" id="btn-register-submit" class="btn-primary btn-block">
+              <span class="btn-spinner" hidden aria-hidden="true"></span>
+              <span class="btn-label">Registrar operador</span>
+            </button>
+          </form>
+        </section>
+      </main>
+    </div>
+
+    <!-- PANTALLA 2: ESPACIO DE TRABAJO PRINCIPAL (MENU DE ARCHIVOS Y RESERVAS) -->
+    <div id="workspace-screen" class="workspace-shell" hidden>
+      <header class="topbar">
+        <div class="topbar-inner">
+          <div class="topbar-left">
+            <button
+              type="button"
+              id="btn-mobile-menu"
+              class="icon-btn mobile-only"
+              aria-label="Abrir menú lateral"
+              aria-expanded="false"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+              </svg>
+            </button>
+            <a href="#reserva" class="brand-wordmark" data-nav="reserva">RZR-Track</a>
+          </div>
+
+          <nav class="topbar-nav" aria-label="Navegación principal">
+            <button type="button" class="nav-link is-active" data-view="reserva">
+              Nueva reserva
+            </button>
+            <button type="button" class="nav-link" data-view="historial">
+              Reservas y clientes
+            </button>
+            <button type="button" class="nav-link" data-view="archivos">
+              Gestor de archivos
+            </button>
+          </nav>
+
+          <div class="topbar-actions">
+            <button type="button" id="btn-logout" class="btn-secondary">
+              Cambiar de usuario
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div class="workspace-body">
+        <aside id="workspace-sidebar" class="sidebar" aria-label="Resumen operativo y accesos">
+          <div class="sidebar-section">
+            <p class="sidebar-kicker">Sesión activa</p>
+            <p class="sidebar-operator" id="sidebar-operator-name">Operador</p>
+            <p class="sidebar-meta">
+              <span id="sidebar-user-handle">@usuario</span>
+              <span aria-hidden="true">·</span>
+              <span id="sidebar-date-label" class="mono-inline">23/11/2026</span>
+            </p>
+            <button type="button" id="btn-toggle-date-editor" class="text-action-btn">
+              Actualizar fecha de operación
+            </button>
+
+            <form id="form-update-date" class="date-editor" hidden novalidate>
+              <label for="update-fecha-input" class="field-label">Nueva fecha (DD/MM/AAAA)</label>
+              <input
+                id="update-fecha-input"
+                type="text"
+                class="field-input mono-input"
+                placeholder="23/11/2026"
+                maxlength="10"
+                required
+              />
+              <label class="checkbox-row">
+                <input type="checkbox" id="update-fecha-reset" />
+                <span>Reiniciar encabezados de archivos del día</span>
+              </label>
+              <div class="inline-btn-row">
+                <button type="submit" class="btn-primary btn-sm">Guardar fecha</button>
+                <button type="button" id="btn-cancel-date-editor" class="btn-ghost btn-sm">
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div class="sidebar-divider"></div>
+
+          <nav class="sidebar-menu" aria-label="Menú de archivos y reservas">
+            <p class="sidebar-kicker">Menú operativo</p>
+            <button type="button" class="sidebar-item is-active" data-view="reserva">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              <span>Hacer reserva RZR</span>
+            </button>
+            <button type="button" class="sidebar-item" data-view="historial">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              <span>Reservas y clientes</span>
+            </button>
+            <button type="button" class="sidebar-item" data-view="archivos">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+              <span>Archivos (.txt)</span>
+            </button>
+          </nav>
+
+          <div class="sidebar-divider"></div>
+
+          <div class="sidebar-section">
+            <p class="sidebar-kicker">Sucursales y flota</p>
+            <ul class="plain-spec-list">
+              <li><span>1. Mazamitla</span><span class="mono-muted">Jalisco</span></li>
+              <li><span>2. Tapalpa</span><span class="mono-muted">Jalisco</span></li>
+              <li><span>3. Mazatlán</span><span class="mono-muted">Sinaloa</span></li>
+              <li><span>4. Chacala</span><span class="mono-muted">Nayarit</span></li>
+            </ul>
+            <p class="sidebar-footnote">
+              Unidades: <span class="mono-inline">RZR-01 · RZR-02 · RZR-05</span>
+            </p>
+          </div>
+        </aside>
+
+        <main class="main-viewport">
+          <div
+            id="workspace-loading-bar"
+            class="loading-bar"
+            role="progressbar"
+            aria-label="Sincronizando con servidor"
+            hidden
+          >
+            <div class="loading-bar-fill"></div>
+          </div>
+
+          <div
+            id="workspace-feedback"
+            class="feedback-banner"
+            role="status"
+            aria-live="polite"
+            hidden
+          ></div>
+
+          <!-- VISTA 1: HACER RESERVA RZR -->
+          <section id="view-reserva" class="workspace-view" aria-labelledby="title-reserva">
+            <div class="view-header">
+              <div>
+                <p class="breadcrumb-text">RZR-Track / Operaciones / Nueva reserva</p>
+                <h1 id="title-reserva" class="view-title">Hacer reserva RZR</h1>
+              </div>
+              <p class="view-rate-summary">
+                Tarifa base <span class="mono-inline">$500.00 / hr</span>
+                <span aria-hidden="true">·</span>
+                Extras <span class="mono-inline">$300.00</span>
+              </p>
+            </div>
+
+            <div class="reserva-grid">
+              <form id="form-reserva" class="surface-card stack-form" novalidate>
+                <div class="field-group">
+                  <span class="field-label">1. Selecciona la sucursal</span>
+                  <div class="option-grid-2" role="radiogroup" aria-label="Sucursal">
+                    <button type="button" class="choice-tile is-selected" data-branch="1">
+                      <span class="choice-num">01</span>
+                      <span class="choice-name">Mazamitla</span>
+                    </button>
+                    <button type="button" class="choice-tile" data-branch="2">
+                      <span class="choice-num">02</span>
+                      <span class="choice-name">Tapalpa</span>
+                    </button>
+                    <button type="button" class="choice-tile" data-branch="3">
+                      <span class="choice-num">03</span>
+                      <span class="choice-name">Mazatlán</span>
+                    </button>
+                    <button type="button" class="choice-tile" data-branch="4">
+                      <span class="choice-num">04</span>
+                      <span class="choice-name">Chacala</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="field-group">
+                  <span class="field-label">2. Clave del vehículo RZR</span>
+                  <div class="option-grid-3" role="radiogroup" aria-label="Vehículo RZR">
+                    <button type="button" class="choice-tile is-selected" data-rzr="RZR-01">
+                      <span class="choice-name mono-inline">RZR-01</span>
+                      <span class="choice-sub">Disponible</span>
+                    </button>
+                    <button type="button" class="choice-tile" data-rzr="RZR-02">
+                      <span class="choice-name mono-inline">RZR-02</span>
+                      <span class="choice-sub">Disponible</span>
+                    </button>
+                    <button type="button" class="choice-tile" data-rzr="RZR-05">
+                      <span class="choice-name mono-inline">RZR-05</span>
+                      <span class="choice-sub">Disponible</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div class="form-row-2">
+                  <div class="field-group">
+                    <label for="res-nombre" class="field-label">3. Nombre del cliente</label>
+                    <input
+                      id="res-nombre"
+                      name="nombre"
+                      type="text"
+                      class="field-input"
+                      placeholder="Nombre completo"
+                      maxlength="80"
+                      required
+                    />
+                  </div>
+
+                  <div class="field-group">
+                    <label for="res-telefono" class="field-label">Teléfono</label>
+                    <input
+                      id="res-telefono"
+                      name="telefono"
+                      type="tel"
+                      class="field-input mono-input"
+                      placeholder="33 1234 5678"
+                      maxlength="20"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="field-group">
+                  <label for="res-horas" class="field-label">4. Duración del tour (horas)</label>
+                  <div class="hours-input-row">
+                    <input
+                      id="res-horas"
+                      name="horas"
+                      type="number"
+                      class="field-input mono-input"
+                      value="2"
+                      min="0.5"
+                      max="72"
+                      step="0.5"
+                      required
+                    />
+                    <div class="preset-group" aria-label="Duración rápida">
+                      <button type="button" class="preset-btn" data-hours="1">1 hr</button>
+                      <button type="button" class="preset-btn" data-hours="2">2 hrs</button>
+                      <button type="button" class="preset-btn" data-hours="3">3 hrs</button>
+                      <button type="button" class="preset-btn" data-hours="4">4 hrs</button>
+                    </div>
+                  </div>
+                </div>
+
+                <button type="submit" id="btn-submit-reserva" class="btn-primary btn-block">
+                  <span class="btn-spinner" hidden aria-hidden="true"></span>
+                  <span class="btn-label">Confirmar reserva y guardar en archivos</span>
+                </button>
+              </form>
+
+              <!-- Panel Derecho: Ticket en vivo / Ticket Confirmado -->
+              <aside class="ticket-panel" aria-label="Ticket de reserva">
+                <div class="ticket-header">
+                  <div>
+                    <p class="sidebar-kicker" id="ticket-status-kicker">Resumen en vivo</p>
+                    <h2 class="ticket-title" id="ticket-heading">Ticket de reserva</h2>
+                  </div>
+                  <span class="mono-muted" id="ticket-folio-text">Borrador</span>
+                </div>
+
+                <dl class="ticket-details">
+                  <div class="ticket-row">
+                    <dt>Sucursal</dt>
+                    <dd id="ticket-sucursal">Mazamitla</dd>
+                  </div>
+                  <div class="ticket-row">
+                    <dt>Vehículo RZR</dt>
+                    <dd id="ticket-rzr" class="mono-inline">RZR-01</dd>
+                  </div>
+                  <div class="ticket-row">
+                    <dt>Cliente</dt>
+                    <dd id="ticket-cliente">Sin asignar</dd>
+                  </div>
+                  <div class="ticket-row">
+                    <dt>Teléfono</dt>
+                    <dd id="ticket-telefono" class="mono-inline">—</dd>
+                  </div>
+                  <div class="ticket-row">
+                    <dt>Duración del tour</dt>
+                    <dd id="ticket-horas" class="mono-inline">2.0 hrs</dd>
+                  </div>
+                  <div class="ticket-row">
+                    <dt>Fecha operativa</dt>
+                    <dd id="ticket-fecha" class="mono-inline">—</dd>
+                  </div>
+                </dl>
+
+                <div class="ticket-divider"></div>
+
+                <dl class="ticket-totals">
+                  <div class="ticket-row">
+                    <dt>Subtotal (<span id="ticket-hours-calc" class="mono-inline">2</span> × $500.00)</dt>
+                    <dd id="ticket-subtotal" class="mono-inline">$1,000.00</dd>
+                  </div>
+                  <div class="ticket-row">
+                    <dt>Costo extras (equipo y ruta)</dt>
+                    <dd class="mono-inline">$300.00</dd>
+                  </div>
+                  <div class="ticket-row ticket-row-total">
+                    <dt>Total a pagar</dt>
+                    <dd id="ticket-total" class="mono-total">$1,300.00</dd>
+                  </div>
+                </dl>
+
+                <div id="ticket-confirmed-actions" class="ticket-actions" hidden>
+                  <p class="ticket-saved-note">
+                    Guardado correctamente en <span class="mono-inline">reservas.txt</span> y
+                    <span class="mono-inline">clientes.txt</span>.
+                  </p>
+                  <div class="inline-btn-row">
+                    <button type="button" id="btn-print-ticket" class="btn-secondary">
+                      Imprimir ticket
+                    </button>
+                    <button type="button" id="btn-new-reserva" class="btn-primary">
+                      Nueva reserva
+                    </button>
+                  </div>
+                </div>
+              </aside>
+            </div>
+          </section>
+
+          <!-- VISTA 2: HISTORIAL DE RESERVAS Y CLIENTES -->
+          <section id="view-historial" class="workspace-view" hidden aria-labelledby="title-historial">
+            <div class="view-header">
+              <div>
+                <p class="breadcrumb-text">RZR-Track / Registros / Reservas y clientes</p>
+                <h1 id="title-historial" class="view-title">Reservas y directorio de clientes</h1>
+              </div>
+              <button type="button" id="btn-refresh-records" class="btn-secondary">
+                Actualizar registros
+              </button>
+            </div>
+
+            <div class="toolbar-row">
+              <div class="segmented-control" role="tablist" aria-label="Tipo de registro">
+                <button
+                  type="button"
+                  id="subtab-reservas"
+                  class="segmented-btn is-active"
+                  role="tab"
+                  aria-selected="true"
+                >
+                  Reservas (<span id="count-reservas" class="mono-inline">0</span>)
+                </button>
+                <button
+                  type="button"
+                  id="subtab-clientes"
+                  class="segmented-btn"
+                  role="tab"
+                  aria-selected="false"
+                >
+                  Clientes (<span id="count-clientes" class="mono-inline">0</span>)
+                </button>
+              </div>
+
+              <div class="filter-controls">
+                <input
+                  id="records-search"
+                  type="search"
+                  class="field-input search-input"
+                  placeholder="Buscar por cliente, teléfono o RZR..."
+                  aria-label="Buscar registros"
+                />
+                <select id="records-branch-filter" class="field-input select-input" aria-label="Filtrar por sucursal">
+                  <option value="all">Todas las sucursales</option>
+                  <option value="Mazamitla">Mazamitla</option>
+                  <option value="Tapalpa">Tapalpa</option>
+                  <option value="Mazatlán">Mazatlán</option>
+                  <option value="Chacala">Chacala</option>
+                </select>
+              </div>
+            </div>
+
+            <div id="records-table-container" class="table-wrapper">
+              <table class="data-table" id="records-table">
+                <thead id="records-thead"></thead>
+                <tbody id="records-tbody"></tbody>
+              </table>
+              <div id="records-empty" class="empty-state" hidden>
+                <p class="empty-title">Aún no hay registros que coincidan</p>
+                <p class="empty-copy">
+                  Las reservas confirmadas se guardan automáticamente en reservas.txt y clientes.txt.
+                </p>
+                <button type="button" id="btn-empty-create-reserva" class="btn-primary">
+                  Crear primera reserva
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- VISTA 3: GESTOR DE ARCHIVOS (.TXT) -->
+          <section id="view-archivos" class="workspace-view" hidden aria-labelledby="title-archivos">
+            <div class="view-header">
+              <div>
+                <p class="breadcrumb-text">RZR-Track / Sistema de archivos / Bitácoras .txt</p>
+                <h1 id="title-archivos" class="view-title">Gestor de archivos</h1>
+              </div>
+              <button type="button" id="btn-refresh-files" class="btn-secondary">
+                Recargar lista
+              </button>
+            </div>
+
+            <div class="files-grid">
+              <aside class="surface-card files-sidebar" aria-label="Lista de archivos disponibles">
+                <div class="files-sidebar-head">
+                  <h2 class="section-subtitle">Archivos disponibles</h2>
+                  <span class="mono-muted" id="files-count-label">0 archivos</span>
+                </div>
+
+                <ul id="files-list" class="files-list"></ul>
+
+                <div class="sidebar-divider"></div>
+
+                <form id="form-create-file" class="stack-form-compact" novalidate>
+                  <label for="new-file-name" class="field-label">Crear archivo nuevo (.txt)</label>
+                  <div class="inline-input-row">
+                    <input
+                      id="new-file-name"
+                      type="text"
+                      class="field-input"
+                      placeholder="ej. mantenimiento.txt"
+                      maxlength="44"
+                      required
+                    />
+                    <button type="submit" id="btn-create-file" class="btn-primary btn-sm">
+                      Crear
+                    </button>
+                  </div>
+                </form>
+              </aside>
+
+              <div class="surface-card file-viewer-panel">
+                <div class="file-viewer-header">
+                  <div>
+                    <p class="sidebar-kicker">Lectura de archivo</p>
+                    <h2 id="active-file-title" class="section-subtitle mono-inline">
+                      Selecciona un archivo
+                    </h2>
+                  </div>
+                  <button type="button" id="btn-reload-active-file" class="btn-ghost btn-sm" disabled>
+                    Actualizar vista
+                  </button>
+                </div>
+
+                <pre id="active-file-content" class="file-code-viewer">Selecciona un archivo de la lista para leer su contenido.</pre>
+
+                <form id="form-append-file" class="append-form" novalidate>
+                  <label for="append-file-text" class="field-label">
+                    Escribir nueva línea con la fecha operativa actual
+                  </label>
+                  <div class="inline-input-row">
+                    <input
+                      id="append-file-text"
+                      type="text"
+                      class="field-input"
+                      placeholder="Escribe la nota o registro a guardar..."
+                      maxlength="500"
+                      disabled
+                      required
+                    />
+                    <button type="submit" id="btn-append-file" class="btn-primary" disabled>
+                      Guardar línea
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <!-- MODAL DE INACTIVIDAD (10 MINUTOS) -->
+    <div
+      id="inactivity-modal"
+      class="modal-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="inactivity-title"
+      hidden
+    >
+      <div class="modal-card">
+        <h2 id="inactivity-title" class="section-subtitle">Han pasado 10 minutos</h2>
+        <p class="modal-copy">
+          ¿Deseas continuar trabajando en RZR-Track o prefieres regresar a la pantalla inicial?
+        </p>
+        <div class="inline-btn-row">
+          <button type="button" id="btn-inactivity-continue" class="btn-primary">
+            Sí, continuar
+          </button>
+          <button type="button" id="btn-inactivity-exit" class="btn-secondary">
+            No, cerrar sesión
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

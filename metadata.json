@@ -1,0 +1,6 @@
+{
+  "name": "RZR-Track",
+  "description": "Plataforma web para gestión de reservas de tours RZR, directorio de clientes, cálculo de tarifas y bitácora operativa en archivos.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
