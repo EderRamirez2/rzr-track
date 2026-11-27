@@ -601,9 +601,10 @@ async function handleReservaSubmit(event) {
 async function loadRecords() {
   setBarLoading('workspace-loading-bar', true);
   try {
-    const data = await apiRequest('/api/records');
-    state.reservas = data.reservas || [];
-    state.clientes = data.clientes || [];
+        const data = await apiRequest('/api/reservas');
+    state.reservas = Array.isArray(data) ? data : (data.reservas || []);
+    const clientesData = await apiRequest('/api/clientes');
+state.clientes = Array.isArray(clientesData) ? clientesData : (clientesData.clientes || []);
     document.getElementById('count-reservas').textContent = String(state.reservas.length);
     document.getElementById('count-clientes').textContent = String(state.clientes.length);
     renderRecordsTable();
