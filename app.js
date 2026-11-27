@@ -4,7 +4,7 @@
  */
 
 const API_BASE = '';
-const MODO_LOCAL = true;
+const MODO_LOCAL = false;
 
 const TARIFA_POR_HORA = 500.0;
 const COSTO_EXTRAS = 300.0;
