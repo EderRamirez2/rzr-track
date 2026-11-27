@@ -101,6 +101,8 @@ async function apiRequest(path, options = {}) {
     }
     return arr;
   }
+    // Si es modo local, NUNCA ir al servidor
+  if (MODO_LOCAL) return [];
   const headers = {
     'Content-Type': 'application/json',
     ...(options.headers || {}),
