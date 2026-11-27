@@ -806,13 +806,13 @@ async function bootstrapApp() {
   fechaInput.value = getTodayFormatted();
 
   try {
-    const info = await apiRequest('/api/state');
-    if (info.fechaTexto) {
+    const info = MODO_LOCAL ? null : await apiRequest('/api/state');
+    if (info && info.fechaTexto) {
       fechaInput.value = info.fechaTexto;
       document.getElementById('auth-date-summary').textContent =
         `Operación diaria · ${info.fechaTexto}`;
     }
-    if (!info.hasRegisteredUsers) {
+    if (info && info.hasRegisteredUsers) {
       document.getElementById('auth-first-user-hint').textContent =
         'Aún no hay operadores registrados. Crea el primer usuario en la pestaña Registrarse.';
     }
