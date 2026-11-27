@@ -461,6 +461,19 @@ function updateLiveTicketPreview() {
 }
 
 function renderConfirmedTicket(ticket) {
+  if (!ticket) {
+  ticket = {
+    folio: "RZR-" + Date.now().toString().slice(-6),
+    sucursal: "Mazamitla",
+    rzr: "RZR-1",
+    nombre: "Sin asignar",
+    telefono: "-",
+    horas: 1,
+    fechaTexto: "",
+    subtotal: 0,
+    total: 0
+  };
+}
   state.ticketLocked = true;
   document.getElementById('ticket-status-kicker').textContent = 'Reserva confirmada';
   document.getElementById('ticket-heading').textContent = 'Ticket oficial RZR-Track';
