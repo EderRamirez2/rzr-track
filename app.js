@@ -462,17 +462,21 @@ function updateLiveTicketPreview() {
 
 function renderConfirmedTicket(ticket) {
   if (!ticket) {
-  ticket = {
-    folio: "RZR-" + Date.now().toString().slice(-6),
-    sucursal: "Mazamitla",
-    rzr: "RZR-1",
-    nombre: "Sin asignar",
-    telefono: "-",
-    horas: 1,
-    fechaTexto: "",
-    subtotal: 0,
-    total: 0
-  };
+    const nombreReal = document.getElementById('res-nombre').value.trim();
+    const telReal = document.getElementById('res-telefono').value.trim();
+    const horasReal = Number(document.getElementById('res-horas').value) || 1;
+    const subReal = horasReal * TARIFA_POR_HORA;
+    ticket = {
+      folio: "RZR-" + Date.now().toString().slice(-6),
+      sucursal: "Mazamitla",
+      rzr: state.selectedRzr || "RZR-1",
+      nombre: nombreReal || "Sin asignar",
+      telefono: telReal || "-",
+      horas: horasReal,
+      fechaTexto: state.fechaTexto || "27/11/2026",
+      subtotal: subReal,
+      total: subReal + COSTO_EXTRAS
+    };
 }
   state.ticketLocked = true;
   document.getElementById('ticket-status-kicker').textContent = 'Reserva confirmada';
