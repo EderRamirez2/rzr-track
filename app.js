@@ -806,7 +806,7 @@ async function bootstrapApp() {
   fechaInput.value = getTodayFormatted();
 
   try {
-    const info = MODO_LOCAL ? null : await apiRequest('/api/state');
+    const info = MODO_LOCAL ? { fechaTexto: '27/11/2026', hasRegisteredUsers: true, hasPendingReservations: false } : await apiRequest('/api/state');
     if (info && info.fechaTexto) {
       fechaInput.value = info.fechaTexto;
       document.getElementById('auth-date-summary').textContent =
