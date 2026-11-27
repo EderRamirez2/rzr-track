@@ -64,15 +64,43 @@ function validateDateString(text) {
 }
 
 async function apiRequest(path, options = {}) {
+  const method = options.method || 'GET';
   if (path.includes('/reservas')) {
-if (!options.method || options.method === 'GET') {
-return JSON.parse(localStorage.getItem('reservas_rzr') || '[]');
-}
-return { ok: true };
-}
-if (path.includes('/clientes')) {
-return [];
-}
+    let arr = JSON.parse(localStorage.getItem('reservas_rzr') || '[]');
+    if (method === 'GET') return arr;
+    if (method === 'POST') {
+      const body = JSON.parse(options.body || '{}');
+      body.id = body.id || Date.now();
+      arr.push(body);
+      localStorage.setItem('reservas_rzr', JSON.stringify(arr));
+      return body;
+    }
+    if (method === 'PUT' || method === 'PATCH') {
+      const body = JSON.parse(options.body || '{}');
+      arr = arr.map(r => r.id == body.id ? { ...r, ...body } : r);
+      localStorage.setItem('reservas_rzr', JSON.stringify(arr));
+      return body;
+    }
+    if (method === 'DELETE') {
+      const id = path.split('/').pop();
+      arr = arr.filter(r => String(r.id) !== String(id));
+      localStorage.setItem('reservas_rzr', JSON.stringify(arr));
+      return { ok: true };
+    }
+    return arr;
+  }
+  if (path.includes('/clientes')) {
+    let arr = JSON.parse(localStorage.getItem('clientes_rzr') || '[]');
+    if (method === 'GET') return arr;
+    if (method === 'POST') {
+      const body = JSON.parse(options.body || '{}');
+      body.id = body.id || Date.now();
+      arr.push(body);
+      localStorage.setItem('clientes_rzr', JSON.stringify(arr));
+      return body;
+    }
+    return arr;
+  }
   const headers = {
     'Content-Type': 'application/json',
     ...(options.headers || {}),
